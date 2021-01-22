@@ -14,8 +14,17 @@ describe Script::Layers::Domain::PushPackage do
   let(:force) { false }
   let(:script_content) { "(module)" }
   let(:compiled_type) { "wasm" }
+  let(:schema_major_version) { "1" }
+  let(:schema_minor_version) { "0" }
   let(:push_package) do
-    Script::Layers::Domain::PushPackage.new(id, script, script_content, compiled_type)
+    Script::Layers::Domain::PushPackage.new(
+      id,
+      script,
+      script_content,
+      compiled_type,
+      schema_major_version,
+      schema_minor_version
+    )
   end
   let(:script_service) { Minitest::Mock.new }
   let(:id) { "push_package_id" }
