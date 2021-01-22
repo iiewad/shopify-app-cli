@@ -50,6 +50,21 @@ module Script
 
           script_not_found_cause: "Couldn't find script %s for extension point %s",
 
+          service_failure_cause: "Upstream service did not respond as expected",
+
+          metadata_validation_cause: "Invalid script extension metadata",
+
+          metadata_schema_versions_missing: "Invalid script extension metadata:" \
+                                            " 'schemaVersions' construct missing",
+          metadata_schema_versions_single_key: "Invalid script extension metadata:" \
+                                               " 'schemaVersions' construct must contain exactly one key",
+          metadata_schema_versions_missing_major: "Invalid script extension metadata:" \
+                                                  " 'schemaVersions' construct is missing the 'major' field",
+          metadata_schema_versions_missing_minor: "Invalid script extension metadata:" \
+                                                  " 'schemaVersions' construct is missing the 'minor' field",
+
+          metadata_not_found_cause: "Script extension version file (%s) not found when expected",
+
           app_not_installed_cause: "App not installed on store.",
 
           app_script_not_pushed_help: "Script isn't on the app. Run {{command:shopify push}}, and then try again.",

@@ -40,10 +40,13 @@ module Script
         end
 
         def metadata
-          raise Domain::Errors::MetadataNotFoundError unless @ctx.file_exist?(METADATA_FILE)
+          unless @ctx.file_exist?(METADATA_FILE)
+            msg = @ctx.message('script.error.metadata_not_found_cause', METADATA_FILE)
+            raise Domain::Errors::MetadataNotFoundError, msg
+          end
 
           raw_contents = File.read(METADATA_FILE)
-          Domain::Metadata.create_from_json(raw_contents)
+          Domain::Metadata.create_from_json(@ctx, raw_contents)
         end
 
         private

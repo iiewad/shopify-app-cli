@@ -5,6 +5,7 @@ require "project_types/script/test_helper"
 describe Script::Layers::Domain::Metadata do
   let(:schema_major_version) { "1" }
   let(:schema_minor_version) { "0" }
+  let(:ctx) { ShopifyCli::Context.new }
   let(:raw_json) do
     JSON.dump(
       {
@@ -28,7 +29,7 @@ describe Script::Layers::Domain::Metadata do
 
   describe ".create_from_json" do
     describe "with valid json" do
-      subject { Script::Layers::Domain::Metadata.create_from_json(raw_json) }
+      subject { Script::Layers::Domain::Metadata.create_from_json(ctx, raw_json) }
 
       it "should construct new Metadata" do
         assert_equal schema_major_version, subject.schema_major_version
@@ -39,7 +40,7 @@ describe Script::Layers::Domain::Metadata do
     describe "with missing schemaVersions" do
       it "should raise an appropriate error" do
         assert_raises(::Script::Layers::Domain::Errors::MetadataValidationError) do
-          Script::Layers::Domain::Metadata.create_from_json('{}')
+          Script::Layers::Domain::Metadata.create_from_json(ctx, '{}')
         end
       end
     end
@@ -58,7 +59,7 @@ describe Script::Layers::Domain::Metadata do
 
       it "should raise an appropriate error" do
         assert_raises(::Script::Layers::Domain::Errors::MetadataValidationError) do
-          Script::Layers::Domain::Metadata.create_from_json(raw_json_multiple_eps)
+          Script::Layers::Domain::Metadata.create_from_json(ctx, raw_json_multiple_eps)
         end
       end
     end
@@ -76,7 +77,7 @@ describe Script::Layers::Domain::Metadata do
 
       it "should raise an appropriate error" do
         assert_raises(::Script::Layers::Domain::Errors::MetadataValidationError) do
-          Script::Layers::Domain::Metadata.create_from_json(raw_json_no_major)
+          Script::Layers::Domain::Metadata.create_from_json(ctx, raw_json_no_major)
         end
       end
     end
@@ -92,7 +93,7 @@ describe Script::Layers::Domain::Metadata do
             },
           )
         end
-        subject { Script::Layers::Domain::Metadata.create_from_json(raw_json_no_minor) }
+        subject { Script::Layers::Domain::Metadata.create_from_json(ctx, raw_json_no_minor) }
 
         it "should construct a valid object" do
           assert_equal "prerelease", subject.schema_major_version
@@ -112,7 +113,7 @@ describe Script::Layers::Domain::Metadata do
 
         it "should raise an appropriate error" do
           assert_raises(::Script::Layers::Domain::Errors::MetadataValidationError) do
-            Script::Layers::Domain::Metadata.create_from_json(raw_json_no_minor)
+            Script::Layers::Domain::Metadata.create_from_json(ctx, raw_json_no_minor)
           end
         end
       end

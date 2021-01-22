@@ -102,6 +102,18 @@ module Script
               e.extension_point_type
             ),
           }
+        when Layers::Domain::Errors::ServiceFailureError
+          {
+            cause_of_error: ShopifyCli::Context.message('script.error.service_failure_cause'),
+          }
+        when Layers::Domain::Errors::MetadataValidationError
+          {
+            cause_of_error: ShopifyCli::Context.message('script.error.metadata_validation_cause'),
+          }
+        when Layers::Domain::Errors::MetadataNotFoundError
+          {
+            cause_of_error: ShopifyCli::Context.message('script.error.metadata_not_found_cause'),
+          }
         when Layers::Infrastructure::Errors::AppNotInstalledError
           {
             cause_of_error: ShopifyCli::Context.message('script.error.app_not_installed_cause'),

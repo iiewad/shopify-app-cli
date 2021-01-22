@@ -12,34 +12,39 @@ module Script
         end
 
         class << self
-          def create_from_json(metadata_json)
+          def create_from_json(ctx, metadata_json)
             metadata_hash = JSON.parse(metadata_json)
             schema_versions = metadata_hash["schemaVersions"]
             if schema_versions.nil?
-              err_msg = "Metadata is missing schemaVersions"
-              raise ::Script::Layers::Domain::Errors::MetadataValidationError, err_msg
+              err_msg = "script.error.metadata_schema_versions_missing"
+              raise ::Script::Layers::Domain::Errors::MetadataValidationError, ctx.message(err_msg)
             end
             # Scripts may be attached to more than one EP in the future but not right now
             unless schema_versions.count == 1
-              err_msg = "Metadata schemaVersions should have one key"
-              raise ::Script::Layers::Domain::Errors::MetadataValidationError, err_msg
+              err_msg = "script.error.metadata_schema_versions_single_key"
+              raise ::Script::Layers::Domain::Errors::MetadataValidationError, ctx.message(err_msg)
             end
 
             _, version = schema_versions.first
             schema_major_version = version["major"]
             schema_minor_version = version["minor"]
             if schema_major_version.nil?
-              err_msg = "Metadata schema version is missing major key"
-              raise ::Script::Layers::Domain::Errors::MetadataValidationError, err_msg
+              err_msg = "script.error.metadata_schema_versions_missing_major"
+              raise ::Script::Layers::Domain::Errors::MetadataValidationError, ctx.message(err_msg)
             end
             is_prerelease = schema_major_version == "prerelease"
 
             if schema_minor_version.nil? && !is_prerelease
-              err_msg = "Metadata schema version is missing minor key"
-              raise ::Script::Layers::Domain::Errors::MetadataValidationError, err_msg
+              err_msg = "script.error.metadata_schema_versions_missing_minor"
+              raise ::Script::Layers::Domain::Errors::MetadataValidationError, ctx.message(err_msg)
             end
 
             Metadata.new(schema_major_version, schema_minor_version)
+          rescue ::Script::Layers::Domain::Errors::MetadataValidationError
+            raise
+          rescue
+            err_msg = "script.error.metadata_validation_cause"
+            raise ::Script::Layers::Domain::Errors::MetadataValidationError, ctx.message(err_msg)
           end
         end
       end
