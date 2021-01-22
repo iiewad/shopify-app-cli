@@ -38,7 +38,7 @@ describe Script::Layers::Domain::Metadata do
 
     describe "with missing schemaVersions" do
       it "should raise an appropriate error" do
-        assert_raises(Script::Layers::Domain::Metadata::MetadataValidationError) do
+        assert_raises(::Script::Layers::Domain::Errors::MetadataValidationError) do
           Script::Layers::Domain::Metadata.create_from_json('{}')
         end
       end
@@ -57,7 +57,7 @@ describe Script::Layers::Domain::Metadata do
       end
 
       it "should raise an appropriate error" do
-        assert_raises(Script::Layers::Domain::Metadata::MetadataValidationError) do
+        assert_raises(::Script::Layers::Domain::Errors::MetadataValidationError) do
           Script::Layers::Domain::Metadata.create_from_json(raw_json_multiple_eps)
         end
       end
@@ -75,7 +75,7 @@ describe Script::Layers::Domain::Metadata do
       end
 
       it "should raise an appropriate error" do
-        assert_raises(Script::Layers::Domain::Metadata::MetadataValidationError) do
+        assert_raises(::Script::Layers::Domain::Errors::MetadataValidationError) do
           Script::Layers::Domain::Metadata.create_from_json(raw_json_no_major)
         end
       end
@@ -111,7 +111,7 @@ describe Script::Layers::Domain::Metadata do
         end
 
         it "should raise an appropriate error" do
-          assert_raises(Script::Layers::Domain::Metadata::MetadataValidationError) do
+          assert_raises(::Script::Layers::Domain::Errors::MetadataValidationError) do
             Script::Layers::Domain::Metadata.create_from_json(raw_json_no_minor)
           end
         end

@@ -4,8 +4,6 @@ module Script
   module Layers
     module Domain
       class Metadata
-        class MetadataValidationError < StandardError; end
-
         attr_reader :schema_major_version, :schema_minor_version
 
         def initialize(schema_major_version, schema_minor_version)
@@ -17,22 +15,28 @@ module Script
           def create_from_json(metadata_json)
             metadata_hash = JSON.parse(metadata_json)
             schema_versions = metadata_hash["schemaVersions"]
-            raise MetadataValidationError, "Metadata is missing schemaVersions" if schema_versions.nil?
-
+            if schema_versions.nil?
+              err_msg = "Metadata is missing schemaVersions"
+              raise ::Script::Layers::Domain::Errors::MetadataValidationError, err_msg
+            end
             # Scripts may be attached to more than one EP in the future but not right now
             unless schema_versions.count == 1
-              raise MetadataValidationError, "Metadata schemaVersions should have one key"
+              err_msg = "Metadata schemaVersions should have one key"
+              raise ::Script::Layers::Domain::Errors::MetadataValidationError, err_msg
             end
 
             _, version = schema_versions.first
             schema_major_version = version["major"]
             schema_minor_version = version["minor"]
-            raise MetadataValidationError, "Metadata schema version is missing major key" if schema_major_version.nil?
-
+            if schema_major_version.nil?
+              err_msg = "Metadata schema version is missing major key"
+              raise ::Script::Layers::Domain::Errors::MetadataValidationError, err_msg
+            end
             is_prerelease = schema_major_version == "prerelease"
 
             if schema_minor_version.nil? && !is_prerelease
-              raise MetadataValidationError, "Metadata schema version is missing minor key"
+              err_msg = "Metadata schema version is missing minor key"
+              raise ::Script::Layers::Domain::Errors::MetadataValidationError, err_msg
             end
 
             Metadata.new(schema_major_version, schema_minor_version)
