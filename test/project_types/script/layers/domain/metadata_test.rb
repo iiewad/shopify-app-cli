@@ -83,38 +83,19 @@ describe Script::Layers::Domain::Metadata do
     end
 
     describe "with missing minor version" do
-      describe "as prerelease" do
-        let(:raw_json_no_minor) do
-          JSON.dump(
-            {
-              schemaVersions: {
-                example: { major: 'prerelease' },
-              },
+      let(:raw_json_no_minor) do
+        JSON.dump(
+          {
+            schemaVersions: {
+              example: { major: schema_major_version },
             },
-          )
-        end
-        subject { Script::Layers::Domain::Metadata.create_from_json(ctx, raw_json_no_minor) }
-
-        it "should construct a valid object" do
-          assert_equal "prerelease", subject.schema_major_version
-        end
+          },
+        )
       end
 
-      describe "as non-prerelease" do
-        let(:raw_json_no_minor) do
-          JSON.dump(
-            {
-              schemaVersions: {
-                example: { major: schema_major_version },
-              },
-            },
-          )
-        end
-
-        it "should raise an appropriate error" do
-          assert_raises(::Script::Layers::Domain::Errors::MetadataValidationError) do
-            Script::Layers::Domain::Metadata.create_from_json(ctx, raw_json_no_minor)
-          end
+      it "should raise an appropriate error" do
+        assert_raises(::Script::Layers::Domain::Errors::MetadataValidationError) do
+          Script::Layers::Domain::Metadata.create_from_json(ctx, raw_json_no_minor)
         end
       end
     end

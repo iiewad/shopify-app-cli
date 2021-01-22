@@ -32,9 +32,8 @@ module Script
               err_msg = "script.error.metadata_schema_versions_missing_major"
               raise ::Script::Layers::Domain::Errors::MetadataValidationError, ctx.message(err_msg)
             end
-            is_prerelease = schema_major_version == "prerelease"
 
-            if schema_minor_version.nil? && !is_prerelease
+            if schema_minor_version.nil?
               err_msg = "script.error.metadata_schema_versions_missing_minor"
               raise ::Script::Layers::Domain::Errors::MetadataValidationError, ctx.message(err_msg)
             end
