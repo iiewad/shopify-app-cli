@@ -15,12 +15,11 @@ module Script
             script,
             script_content,
             compiled_type,
-            metadata.schema_major_version,
-            metadata.schema_minor_version
+            metadata,
           )
         end
 
-        def get_push_package(script, compiled_type, metadata)
+        def get_push_package(script, compiled_type, _)
           id = id(script.name, compiled_type)
           if @cache.key?(id)
             @cache[id]

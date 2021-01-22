@@ -14,16 +14,14 @@ describe Script::Layers::Domain::PushPackage do
   let(:force) { false }
   let(:script_content) { "(module)" }
   let(:compiled_type) { "wasm" }
-  let(:schema_major_version) { "1" }
-  let(:schema_minor_version) { "0" }
+  let(:metadata) { Script::Layers::Domain::Metadata.new('1', '0') }
   let(:push_package) do
     Script::Layers::Domain::PushPackage.new(
       id,
       script,
       script_content,
       compiled_type,
-      schema_major_version,
-      schema_minor_version
+      metadata,
     )
   end
   let(:script_service) { Minitest::Mock.new }

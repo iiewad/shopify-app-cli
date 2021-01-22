@@ -16,8 +16,7 @@ module Script
             script,
             script_content,
             compiled_type,
-            metadata.schema_major_version,
-            metadata.schema_minor_version,
+            metadata,
           )
         end
 
@@ -33,8 +32,7 @@ module Script
             script,
             script_content,
             compiled_type,
-            metadata.schema_major_version,
-            metadata.schema_minor_version,
+            metadata,
           )
         end
 
