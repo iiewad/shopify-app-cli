@@ -25,9 +25,9 @@ module Script
 
         class ServiceFailureError < ScriptProjectError; end
 
-        class MetadataNotFoundError < ScriptProjectError; end
-
         class MetadataValidationError < ScriptProjectError; end
+
+        class MetadataNotFoundError < ScriptProjectError; end
       end
     end
   end
