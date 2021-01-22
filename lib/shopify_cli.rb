@@ -158,3 +158,5 @@ module ShopifyCli
     File.join(tool_config_path, 'logs', 'debug.log')
   end
 end
+
+autoload(:Result, 'result')
