@@ -2,20 +2,12 @@
 # typed: strict
 
 module Result
-  class UncheckedError < RuntimeError; end
-
-  class Base
+  class Success 
     def initialize(value)
       @value = value
     end
 
-    protected
-
-    attr_reader :value
-  end
-
-  class Ok < Base
-    def ok?
+    def success?
       true
     end
 
@@ -23,43 +15,25 @@ module Result
       false
     end
 
-    def ok_value
-      value
+    def then(&block)
+      Result(&block).call(@value)
     end
 
-    def ok_value_or(_fallback_value)
-      value
-    end
-
-    def ok_value_or_else(&_fallback_block)
-      value
-    end
-
-    def error_value
-      nil
-    end
-
-    def and_then(&block)
-      new_result = block.call(value)
-      return new_result if new_result.is_a?(Base)
-      raise TypeError, "Expected result object but received #{new_result.class} instead"
-    end
-
-    def or_else(&_block)
+    def rescue
       self
     end
 
-    def yield_ok(&block)
-      Result.ok(block.call(value))
-    end
-
-    def yield_error
-      self
+    def unwrap(*)
+      @value
     end
   end
 
-  class Error < Base
-    def ok?
+  class Error 
+    def initialize(error)
+      @error = error
+    end
+
+    def success?
       false
     end
 
@@ -67,54 +41,42 @@ module Result
       true
     end
 
-    def ok_value
-      raise UncheckedError
-    end
-
-    def ok_value_or(fallback_value)
-      fallback_value
-    end
-
-    def ok_value_or_else(&fallback_block)
-      fallback_block.call(value)
-    end
-
-    def error_value
-      value
-    end
-
-    def and_then(&_block)
+    def then
       self
     end
 
-    def or_else(&block)
-      new_result = block.call(value)
-      raise TypeError unless new_result.is_a?(Base)
-      new_result
+    def rescue(&block)
+      Result(&block).call(@error)
     end
 
-    def yield_ok
-      self
-    end
-
-    def yield_error(&block)
-      Result.error(block.call(value))
+    def unwrap(*args, &block)
+      raise ArgumentError, "expected either a fallback value or a block" unless args.one? ^ block
+      block ? block.call(@error) : args.pop
     end
   end
+end
 
-  extend self
-
-  def new(&block)
-    Ok.new(block.call)
-  rescue => error
-    Error.new(error)
-  end
-
-  def ok(value)
-    Ok.new(value)
-  end
-
-  def error(value)
-    Error.new(value)
+def Result(*args, &block)
+  raise ArgumentError, "expected either a value or a block" unless args.one? ^ block
+  
+  if args.one?
+    args.pop.yield_self do |value|
+      case value
+      when Result::Success, Result::Error
+        value
+      when Exception
+        Result::Error.new(value)
+      else
+        Result::Success.new(value)
+      end
+    end
+  else
+    ->(value = nil) do 
+      begin
+        Result(block.call(value))
+      rescue => error
+        Result(error)
+      end
+    end
   end
 end
