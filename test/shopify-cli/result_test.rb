@@ -60,6 +60,13 @@ module ShopifyCli
       def test_then_captures_exceptions_and_wraps_them_in_an_error
         assert Success.new(1).then { raise "Error" }.error?
       end
+
+      def test_rescue_simply_returns_itself
+        success = Success.new(:success)
+        called = false
+        assert_same(success, success.rescue { called = true })
+        refute called
+      end
     end
 
     class ErrorTest < Minitest::Test
@@ -87,6 +94,13 @@ module ShopifyCli
         assert_raises ArgumentError do
           Error.new(:error).unwrap(:fallback) {}
         end
+      end
+
+      def test_then_simply_returns_itself
+        error = Error.new(:error)
+        called = false
+        assert_same(error, error.then { called = true })
+        refute called
       end
 
       def test_rescue_returns_the_return_value_of_the_block_unchanged_if_it_is_a_result
