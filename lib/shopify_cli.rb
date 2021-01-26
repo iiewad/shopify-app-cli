@@ -116,6 +116,7 @@ module ShopifyCli
   autoload :Project, 'shopify-cli/project'
   autoload :ProjectType, 'shopify-cli/project_type'
   autoload :Resources, 'shopify-cli/resources'
+  autoload :Result, 'shopify-cli/result'
   autoload :Shopifolk, 'shopify-cli/shopifolk'
   autoload :SubCommand, 'shopify-cli/sub_command'
   autoload :Task, 'shopify-cli/task'
@@ -158,5 +159,3 @@ module ShopifyCli
     File.join(tool_config_path, 'logs', 'debug.log')
   end
 end
-
-autoload(:Result, 'result')
